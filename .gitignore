@@ -72,3 +72,6 @@ pip-wheel-metadata/
 
 # Optional: local files
 *.log
+
+# Generated embeddings data
+embedded_chunks.json
