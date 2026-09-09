@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 def load_documents(data_dir="knowledge-base"):
@@ -17,3 +18,7 @@ def load_documents(data_dir="knowledge-base"):
             })
 
     return documents
+
+loaded_documents = load_documents()
+with open("loaded_documents.json", "w", encoding="utf-8") as f:
+    json.dump(loaded_documents, f, ensure_ascii=False, indent=4)
