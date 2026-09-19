@@ -53,7 +53,8 @@ Chunks are generated first as plain JSON (no embeddings), then embedded in a sec
 ## 3. Embedding & Storage
 
 - Model: `text-embedding-3-small` (OpenAI), called in batches rather than one chunk at a time, to reduce API round-trips.
-- ~490 chunks total across the full corpus — small enough that a **plain in-memory list + cosine similarity** was used instead of a real vector database. This was a deliberate choice to understand the retrieval mechanism directly before reaching for a library (Chroma/FAISS/Pinecone) that would hide it.
+- ~490 chunks total across the full corpus — ~~small enough that a **plain in-memory list + cosine similarity** was used instead of a real vector database. This was a deliberate choice to understand the retrieval mechanism directly before reaching for a library (Chroma/FAISS/Pinecone) that would hide it.~~
+- The 490 chunks are inserted into a chromadb (local persistant client) to understand how vector db works.
 - Each chunk's embedding + metadata is cached to a local JSON file after the first embedding run, so development iteration doesn't re-spend API calls re-embedding unchanged data.
 
 **Rule enforced throughout:** the same embedding model is used for every chunk and every query. Embeddings from different models are not comparable — even the same text embedded by two different models produces vectors that can't be meaningfully compared to each other. Chat generation, separately, has no such constraint — the chat model consuming retrieved context can be entirely different from the embedding model.
