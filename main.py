@@ -1,6 +1,6 @@
 import config
 from retriever import Retriever
-from vectorstore import VectorStore
+from vectorstore_chroma_db import VectorStore
 from rag_chat import answer_question
 from memory import ConversationManager
 
@@ -8,10 +8,8 @@ from memory import ConversationManager
 def main():
     print("loading Vector Store... with knowledge base")
     store = VectorStore()
-    store.load()
     retriever = Retriever(store)
     memory = ConversationManager()
-    print(f"Ready, {len(store.chunks)} chunks loaded.\n")
 
     print("Insurellm Knowledge Assistant — ask about company, contracts, employees, or products.")
     print("Type 'exit' to quit.\n")

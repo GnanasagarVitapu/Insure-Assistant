@@ -1,5 +1,5 @@
 import config
-from vectorstore import VectorStore
+from vectorstore_chroma_db import VectorStore
 
 class Retriever:
     def __init__(self, store: VectorStore, embedding_model=config.embedding_model):
