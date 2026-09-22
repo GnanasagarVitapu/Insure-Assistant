@@ -2,3 +2,6 @@ openai
 dotenv
 numpy
 chromadb
+# need these for concept learning
+scikit-learn
+rank_bm25

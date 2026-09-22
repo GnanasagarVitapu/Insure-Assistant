@@ -19,9 +19,15 @@ def chunk_by_headers(raw_text: str, document_name: str, source_type: str):
             section_name = h2_match.group(1)
             body = re.sub(r"^##\s+.+\n", "", section, count=1).strip()
         else:
-            # No H2 header in this section — likely the H1 title + body with no ## splits
             section_name = "Overview"
-            body = re.sub(r"^#\s+.+\n", "", section, count=1).strip()
+            lines = section.split("\n")
+            while lines:
+                stripped = lines[0].strip()
+                if stripped == "" or (stripped.startswith("#") and not stripped.startswith("##")):
+                    lines.pop(0)
+                else:
+                    break
+            body = "\n".join(lines).strip()
 
         if not body:
             continue  # nothing left after stripping header — skip empty chunk
@@ -51,19 +57,25 @@ def chunk_by_headers(raw_text: str, document_name: str, source_type: str):
                         "subsection": None,
                         "chunk_text": f"{title} — {section_name}\n\n{sub}"
                     })
-
-        chunks.append({
-            "source_type": source_type,
-            "document_name": document_name,
-            "section": section_name,
-            "subsection": None,
-            "chunk_text": f"{title} — {section_name}\n\n{body}"
-        })
+        else:
+            chunks.append({
+                "source_type": source_type,
+                "document_name": document_name,
+                "section": section_name,
+                "subsection": None,
+                "chunk_text": f"{title} — {section_name}\n\n{body}"
+            })
 
     return chunks
 
 docs = loader.load_documents()
-product_doc = next(d for d in docs if d["document_name"] == "Bizllm")
-chunks = chunk_by_headers(product_doc["raw_text"], product_doc["document_name"], product_doc["source_type"])
-for c in chunks:
-    print(c["section"], "|", c["subsection"], "->", c["chunk_text"][:80])
+chunks = []
+for doc in docs:
+    chunks.extend(chunk_by_headers(doc["raw_text"], doc["document_name"], doc["source_type"]))
+
+short_chunks = [c for c in chunks if len(c["chunk_text"]) < 60]
+for c in short_chunks:
+    print(c["document_name"], "|", c["section"], "->", repr(c["chunk_text"]))
+
+print(f"\nTotal chunks in corpus: {len(chunks)}")
+print(f"Short/suspicious chunks: {len(short_chunks)}")

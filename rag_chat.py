@@ -1,6 +1,5 @@
 import config
 from retriever import Retriever
-from vectorstore import VectorStore
 from memory import ConversationManager
 
 

@@ -1,4 +1,3 @@
-import config
 from retriever import Retriever
 from vectorstore_chroma_db import VectorStore
 from rag_chat import answer_question
